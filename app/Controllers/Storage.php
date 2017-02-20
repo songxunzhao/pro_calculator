@@ -34,8 +34,9 @@ class Storage extends AppController{
                 'message'   => 'You are not registered yet'
             ]);
         }
-
         $dir_path = $config['file_dir'] . $uuid . DIRECTORY_SEPARATOR;
+        if(!file_exists($dir_path))
+            mkdir($dir_path);
 
         $dir_size = FileHelper::get_folder_size($dir_path);
         $file_size = $request->getHeader('file-size');
@@ -71,7 +72,7 @@ class Storage extends AppController{
             $fh = fopen($file_name, 'rb');
             $stream = new \Slim\Http\Stream($fh);
 
-            $response   = $response->withHeader('Content-Type', 'application/pdf');
+            $response   = $response->withHeader('Content-Type', 'application/octet-stream');
             $response   = $response->withHeader('Content-Description', 'File Transfer');
             $response   = $response->withHeader('Content-Disposition', 'attachment; filename="' .$type . '"');
             $response   = $response->withHeader('Content-Transfer-Encoding', 'binary');

@@ -115,7 +115,7 @@ class Account extends AppController{
                 ]);
             }
 
-            $temp_code = generate_temp_code();
+            $temp_code = $this->generate_temp_code();
             // Send email
 
             // Return temporary code
