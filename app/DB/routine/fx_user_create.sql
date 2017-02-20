@@ -18,4 +18,6 @@ CREATE PROCEDURE fx_user_create(
         NOW(),
         NOW()
     );
+
+    SELECT * FROM user WHERE `uuid_hash` = p_uuid_hash;
   END
