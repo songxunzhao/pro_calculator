@@ -25,8 +25,8 @@ class Storage extends AppController{
 
         $user_model = new UserModel($db);
 
-        $uuid = $request->getHeader('uuid');
-        $type = $request->getHeader('type');
+        $uuid = $request->getHeader('http_uuid');
+        $type = $request->getHeader('http_type');
         $user = $user_model->list_one_by_uuid_hash($user_model->get_uuid_hash($uuid));
         if(!$user) {
             return $response->withJson([
