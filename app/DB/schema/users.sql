@@ -5,7 +5,7 @@
 CREATE TABLE `user` (
   `id`              int(11)       NOT NULL AUTO_INCREMENT
 , `email`           VARCHAR(255)
-, `uuid`            VARCHAR(255)
+, `uuid_hash`       VARCHAR(255)
 , `created_at`      TIMESTAMP
 , `updated_at`      TIMESTAMP
 , PRIMARY KEY (`id`)
