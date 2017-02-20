@@ -40,6 +40,6 @@ class User extends DBModel{
     }
 
     public function get_uuid_hash($uuid) {
-        return password_hash($uuid, PASSWORD_DEFAULT);
+        return hash('sha512', $uuid);
     }
 }
