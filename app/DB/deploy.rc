@@ -1,0 +1,6 @@
+#schema
+./schema/user.sql
+#routine
+#./routine/delete_procedures.sql
+./routine/gl_distance.sql
+#seed

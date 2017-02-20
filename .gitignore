@@ -1,0 +1,5 @@
+.idea/
+.env
+vendor/
+app/Config/
+public/assets/images/

@@ -1,0 +1,1 @@
+php public/db_install.php
