@@ -38,7 +38,7 @@ class Account extends AppController{
             $parsed_body['uuid_hash'] = $uuid_hash;
             $user = $user_model->list_one_by_uuid_hash($uuid_hash);
 
-            if ($user === false) {
+            if (!$user) {
                 $user = $user_model->create(
                     $parsed_body
                 );
