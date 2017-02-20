@@ -11,7 +11,6 @@ use \Psr\Http\Message\ServerRequestInterface as Request;
 use \Psr\Http\Message\ResponseInterface as Response;
 
 use App\Config\Loader;
-use App\Middleware\Authenticaton;
 
 $loader = new Loader();
 $config = $loader->load();
@@ -36,15 +35,14 @@ $app = new \Slim\App(
         'gm_client' => $gmc
     ]
 );
-$authentication = new Authenticaton($conn);
 
-$app->group('/account', function () use($authentication) {
+$app->group('/account', function (){
     $this->post('/signup',              'App\Controllers\Account:signup');
     $this->post('/update',              'App\Controllers\Account:update');
     $this->post('/recover_email',       'App\Controllers\Account:recover_email');
 });
 
-$app->group('/storage', function () use($authentication) {
+$app->group('/storage', function (){
     $this->post('/upload',              'App\Controllers\Storage:upload');
     $this->post('/download',            'App\Controllers\Storage:download');
 });
