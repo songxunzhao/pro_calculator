@@ -3,4 +3,7 @@
 #routine
 #./routine/delete_procedures.sql
 ./routine/gl_distance.sql
+./routine/fx_user_create.sql
+./routine/fx_user_list_one_by_uuid_hash.sql
+./routine/fx_user_update.sql
 #seed
