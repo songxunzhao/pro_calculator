@@ -75,10 +75,7 @@ class Account extends AppController{
         $validator->rule('alphaNum', 'uuid');
         if($validator->validate()) {
             $user_model = new UserModel($this->ci->get('db'));
-            $config = new UserModel($this->ci->get('config'));
-
             $uuid_hash  = $user_model->get_uuid_hash($parsed_body['uuid']);
-            $email = $parsed_body['email'];
             $user = $user_model->list_one_by_uuid_hash($uuid_hash);
             if($user == false) {
                 return $response->withJson([
@@ -88,18 +85,7 @@ class Account extends AppController{
             }
 
             $temp_code = $this->generate_temp_code();
-
-            // Send email
-            $mgClient = new Mailgun($config['mailgun_api_key']);
-            $domain = "";
-            $result = $mgClient->sendMessage($domain, array(
-                'from'    => 'Dervis Dakyuz <mailgun@dakyuz.com>',
-                'to'      => "User <$email>",
-                'subject' => 'Here is your recovery code',
-                'text'    => 'Hi. Here is recovery code ' . $temp_code
-            ));
-
-
+            $this->sendRecoverEmail($temp_code, $user['email']);
             // Return temporary code
             return $response->withJson([
                 'success'   => true,
@@ -117,4 +103,26 @@ class Account extends AppController{
         }
     }
 
+    private function sendRecoverMailgunEmail($temp_code, $email) {
+        // Send email
+        $config = $this->ci->get('config');
+        $mgClient = new Mailgun($config['mailgun_api_key']);
+        $domain = "calculator.dakyuz.com";
+        $result = $mgClient->sendMessage($domain, array(
+            'from'    => 'Calculator Pro<mailgun@calculator.dakyuz.com>',
+            'to'      => "You <$email>",
+            'subject' => 'Here is your recovery code',
+            'text'    => 'Hi. Here is recovery code ' . $temp_code
+        ));
+
+    }
+
+    private function sendRecoverEmail($temp_code, $email) {
+        // Send email
+        $config = $this->ci->get('config');
+        $headers = 'From: Calculator Pro<no-reply@calculator.dakyuz.com' . "\r\n" .
+            'X-Mailer: PHP/' . phpversion();
+        $message = 'Hi. Here is recovery code ' . $temp_code;
+        mail("You <$email>", "Here is your recovery code", $message, $headers);
+    }
 }
