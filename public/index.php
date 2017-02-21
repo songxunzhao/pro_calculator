@@ -38,7 +38,6 @@ $app = new \Slim\App(
 
 $app->group('/account', function (){
     $this->post('/signup',              'App\Controllers\Account:signup');
-    $this->post('/update',              'App\Controllers\Account:update');
     $this->post('/recover_email',       'App\Controllers\Account:recover_email');
 });
 
