@@ -9,8 +9,10 @@ use \Psr\Http\Message\ResponseInterface as Response;
 use App\DB\Models\User as UserModel;
 use App\DB\Models\Session as SessionModel;
 use App\Helpers\SIPHelper;
-use App\Helpers\FileHelper;
 use App\Library\AppController;
+
+use Mailgun\Mailgun;
+
 class Account extends AppController{
     private function generate_temp_code() {
         $alphabet = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890';
@@ -49,48 +51,15 @@ class Account extends AppController{
                 ]);
             }
             else {
+                $user = $user_model->update($parsed_body);
                 return $response->withJson([
-                    'success'   => false,
-                    'message'   => 'This uuid was already used by another'
+                    'success'   => true,
+                    'data'      => $user,
+                    'message'   => 'Successfully updated recovery email'
                 ]);
             }
         }
         else{
-            return $response->withJson([
-                'success'   => false,
-                'data'      => $validator->errors(),
-                'message'   => 'Request is not valid'
-            ]);
-        }
-    }
-
-    public function update(Request $request, Response $response)
-    {
-        $parsed_body = $request->getParsedBody();
-        $validator = new Validator($parsed_body);
-        $validator->rule('required', ['uuid', 'email']);
-        $validator->rule('alphaNum', 'uuid');
-        if($validator->validate()) {
-            $user_model = new UserModel($this->ci->get('db'));
-
-            $uuid_hash  = password_hash($parsed_body['uuid'], PASSWORD_DEFAULT);
-            $parsed_body['uuid_hash'] = $uuid_hash;
-            $user = $user_model->update($parsed_body);
-            if($user == false) {
-                return $response->withJson([
-                    'success' => false,
-                    'message' => 'User doesn\'t exist'
-                ]);
-            }
-            else {
-                return $response->withJson([
-                    'success'   => true,
-                    'data'      => $user,
-                    'message'   => 'Successfully updated user'
-                ]);
-            }
-        }
-        else {
             return $response->withJson([
                 'success'   => false,
                 'data'      => $validator->errors(),
@@ -106,7 +75,10 @@ class Account extends AppController{
         $validator->rule('alphaNum', 'uuid');
         if($validator->validate()) {
             $user_model = new UserModel($this->ci->get('db'));
+            $config = new UserModel($this->ci->get('config'));
+
             $uuid_hash  = $user_model->get_uuid_hash($parsed_body['uuid']);
+            $email = $parsed_body['email'];
             $user = $user_model->list_one_by_uuid_hash($uuid_hash);
             if($user == false) {
                 return $response->withJson([
@@ -116,7 +88,17 @@ class Account extends AppController{
             }
 
             $temp_code = $this->generate_temp_code();
+
             // Send email
+            $mgClient = new Mailgun($config['mailgun_api_key']);
+            $domain = "";
+            $result = $mgClient->sendMessage($domain, array(
+                'from'    => 'Dervis Dakyuz <mailgun@dakyuz.com>',
+                'to'      => "User <$email>",
+                'subject' => 'Here is your recovery code',
+                'text'    => 'Hi. Here is recovery code ' . $temp_code
+            ));
+
 
             // Return temporary code
             return $response->withJson([
