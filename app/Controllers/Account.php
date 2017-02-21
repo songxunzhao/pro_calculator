@@ -109,7 +109,7 @@ class Account extends AppController{
         $mgClient = new Mailgun($config['mailgun_api_key']);
         $domain = "calculator.dakyuz.com";
         $result = $mgClient->sendMessage($domain, array(
-            'from'    => '"Calculator Pro" <mailgun@calculator.dakyuz.com>',
+            'from'    => '"Calculator Pro"<mailgun@calculator.dakyuz.com>',
             'to'      => "You <$email>",
             'subject' => 'Here is your recovery code',
             'text'    => 'Hi. Here is recovery code ' . $temp_code
@@ -120,7 +120,7 @@ class Account extends AppController{
     private function sendRecoverEmail($temp_code, $email) {
         // Send email
         $config = $this->ci->get('config');
-        $headers = 'From: "Calculator Pro" <no-reply@calculator.dakyuz.com' . "\r\n" .
+        $headers = 'From: "Calculator Pro" <no-reply@calculator.dakyuz.com>' . "\r\n" .
             'X-Mailer: PHP/' . phpversion();
         $message = 'Hi. Here is recovery code ' . $temp_code;
         mail("You <$email>", "Here is your recovery code", $message, $headers);
