@@ -44,6 +44,7 @@ $app->group('/account', function (){
 $app->group('/storage', function (){
     $this->post('/upload',              'App\Controllers\Storage:upload');
     $this->post('/download',            'App\Controllers\Storage:download');
+    $this->post('/freespace',            'App\Controllers\Storage:freespace');
 });
 
 $app->run();

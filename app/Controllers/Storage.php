@@ -73,7 +73,6 @@ class Storage extends AppController{
 
     public function download(Request $request, Response $response) {
         $config = $this->ci->get('config');
-        $db = $this->ci->get('db');
         $parsed_body = $request->getParsedBody();
         $uuid = $parsed_body['uuid'];
         $type = $parsed_body['type'];
@@ -97,5 +96,44 @@ class Storage extends AppController{
         else {
             return $response->withStatus(404);
         }
+    }
+
+    public function freespace(Request $request, Response $response) {
+        $config = $this->ci->get('config');
+        $db     = $this->ci->get('db');
+
+        $user_model = new UserModel($db);
+
+        $parsed_body = $request->getParsedBody();
+        $uuid = $parsed_body['uuid'];
+        $type = $parsed_body['type'];
+
+        $user = $user_model->list_one_by_uuid_hash($user_model->get_uuid_hash($uuid));
+        if(!$user) {
+            return $response->withJson([
+                'success'   => false,
+                'message'   => 'You are not registered yet'
+            ]);
+        }
+
+        $dir_path = $config['file_dir'] . $uuid;
+        if(!file_exists($dir_path))
+            mkdir($dir_path);
+
+        $file_path = $dir_path . DIRECTORY_SEPARATOR . $type;
+
+        $dir_size = FileHelper::get_folder_size($dir_path);
+        if(file_exists($file_path))
+            $old_file_size = FileHelper::get_folder_size($file_path);
+        else
+            $old_file_size = 0;
+
+        $available_size = $dir_size - $old_file_size - 1;
+        return $response->withJson([
+            'success'   => true,
+            'data'      => [
+                'available' => $available_size * 1024
+            ]
+        ]);
     }
 }
