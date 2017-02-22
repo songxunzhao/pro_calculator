@@ -39,7 +39,7 @@ class Storage extends AppController{
             mkdir($dir_path);
 
         $dir_size = FileHelper::get_folder_size($dir_path);
-        $file_size = $request->getHeader('file-size');
+        $file_size = $request->getHeader('content-size');
         if($config['space_limit'] < $file_size + $dir_size)
         {
             return $response->withJson([
