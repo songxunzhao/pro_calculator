@@ -26,7 +26,6 @@ class Storage extends AppController{
         $user_model = new UserModel($db);
 
         $uuid = $request->getHeader('http_uuid')[0];
-        $type = $request->getHeader('http_type')[0];
         $user = $user_model->list_one_by_uuid_hash($user_model->get_uuid_hash($uuid));
         if(!$user) {
             return $response->withJson([
@@ -47,7 +46,7 @@ class Storage extends AppController{
                 'message'   => 'File size is too big.'
             ]);
         }
-
+        
         $path = FileHelper::move_input_file('file', $dir_path, '');
 //        $file_streamer = new FileStreamer();
 //        $file_streamer->setDestination($dir_path);

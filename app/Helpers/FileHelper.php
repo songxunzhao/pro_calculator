@@ -27,7 +27,7 @@ class FileHelper {
         if(array_key_exists($input_name, $_FILES))
         {
             $filename = $_FILES[$input_name]["name"];
-            $file = $base_path . "/" . $name_prefix. basename($filename);
+            $file = $base_path . DIRECTORY_SEPARATOR . $name_prefix. basename($filename);
             move_uploaded_file($_FILES[$input_name]['tmp_name'], $file);
             return $file;
         }
