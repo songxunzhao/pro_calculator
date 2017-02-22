@@ -33,7 +33,7 @@ class Storage extends AppController{
                 'message'   => 'You are not registered yet'
             ]);
         }
-        $dir_path = $config['file_dir'] . $uuid . DIRECTORY_SEPARATOR;
+        $dir_path = $config['file_dir'] . $uuid;
         if(!file_exists($dir_path))
             mkdir($dir_path);
 
@@ -46,7 +46,7 @@ class Storage extends AppController{
                 'message'   => 'File size is too big.'
             ]);
         }
-        
+
         $path = FileHelper::move_input_file('file', $dir_path, '');
 //        $file_streamer = new FileStreamer();
 //        $file_streamer->setDestination($dir_path);
