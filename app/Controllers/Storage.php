@@ -33,13 +33,21 @@ class Storage extends AppController{
                 'message'   => 'You are not registered yet'
             ]);
         }
+
         $dir_path = $config['file_dir'] . $uuid;
         if(!file_exists($dir_path))
             mkdir($dir_path);
 
+        $file_path = FileHelper::get_file_name('file', $dir_path);
+
         $dir_size = FileHelper::get_folder_size($dir_path);
-        $file_size = $request->getHeader('content-length')[0];
-        if($config['space_limit'] < $file_size + $dir_size)
+        if(file_exists($file_path))
+            $old_file_size = FileHelper::get_folder_size($file_path);
+        else
+            $old_file_size = 0;
+        $file_size = $request->getHeader('content-length')[0] / 1024;
+
+        if($config['space_limit'] < $file_size + $dir_size - $old_file_size)
         {
             return $response->withJson([
                 'success'   => false,
@@ -47,7 +55,8 @@ class Storage extends AppController{
             ]);
         }
 
-        $path = FileHelper::move_input_file('file', $dir_path, '');
+        FileHelper::move_input_file('file', $file_path);
+
 //        $file_streamer = new FileStreamer();
 //        $file_streamer->setDestination($dir_path);
 //        $file_streamer->setFileName($type);
@@ -57,7 +66,7 @@ class Storage extends AppController{
             'success'   => true,
             'message'   => 'File was saved',
             'data'      => [
-                'file_path' => $path
+                'file_path' => $file_path
             ]
         ]);
     }

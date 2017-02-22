@@ -23,11 +23,9 @@ class FileHelper {
         }
     }
 
-    public static function move_input_file($input_name, $base_path, $name_prefix) {
+    public static function move_input_file($input_name, $file) {
         if(array_key_exists($input_name, $_FILES))
         {
-            $filename = $_FILES[$input_name]["name"];
-            $file = $base_path . DIRECTORY_SEPARATOR . $name_prefix. basename($filename);
             move_uploaded_file($_FILES[$input_name]['tmp_name'], $file);
             return $file;
         }
@@ -35,6 +33,19 @@ class FileHelper {
             return false;
         }
     }
+
+    public static function get_file_name($input_name, $base_path) {
+        if(array_key_exists($input_name, $_FILES))
+        {
+            $filename = $_FILES[$input_name]["name"];
+            $file = $base_path . DIRECTORY_SEPARATOR . basename($filename);
+            return $file;
+        }
+        else{
+            return false;
+        }
+    }
+
     public static function get_folder_size($path) {
         if (strtoupper(substr(PHP_OS, 0, 3)) === 'WIN') {
             $f = $path;
