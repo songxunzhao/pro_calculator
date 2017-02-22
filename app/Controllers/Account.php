@@ -37,7 +37,7 @@ class Account extends AppController{
         {
             $user_model = new UserModel($this->ci->get('db'));
 
-            if(!array_key_exists($parsed_body, 'email'))
+            if(!array_key_exists('email', $parsed_body))
                 $parsed_body['email'] = "";
             $uuid_hash  = $user_model->get_uuid_hash($parsed_body['uuid']);
             $parsed_body['uuid_hash'] = $uuid_hash;
