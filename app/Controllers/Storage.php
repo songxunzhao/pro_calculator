@@ -128,7 +128,7 @@ class Storage extends AppController{
         else
             $old_file_size = 0;
 
-        $available_size = $dir_size - $old_file_size - 1;
+        $available_size = $config['space_limit'] - $dir_size + $old_file_size - 1;
         return $response->withJson([
             'success'   => true,
             'data'      => [
