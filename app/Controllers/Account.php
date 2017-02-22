@@ -28,13 +28,17 @@ class Account extends AppController{
     public function signup(Request $request, Response $response) {
         $parsed_body = $request->getParsedBody();
         $validator = new Validator($parsed_body);
-        $validator->rule('required', ['uuid', 'email']);
+        $validator->rule('required', ['uuid']);
+        $validator->rule('optional', ['email']);
         $validator->rule('alphaNum', 'uuid');
+        $validator->rule('email', 'email');
 
         if($validator->validate())
         {
             $user_model = new UserModel($this->ci->get('db'));
 
+            if(!array_key_exists($parsed_body, 'email'))
+                $parsed_body['email'] = "";
             $uuid_hash  = $user_model->get_uuid_hash($parsed_body['uuid']);
             $parsed_body['uuid_hash'] = $uuid_hash;
             $user = $user_model->list_one_by_uuid_hash($uuid_hash);
