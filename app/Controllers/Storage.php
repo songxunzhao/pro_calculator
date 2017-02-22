@@ -98,7 +98,7 @@ class Storage extends AppController{
         }
     }
 
-    public function freespace(Request $request, Response $response) {
+    public function status(Request $request, Response $response) {
         $config = $this->ci->get('config');
         $db     = $this->ci->get('db');
 
