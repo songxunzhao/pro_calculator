@@ -48,14 +48,18 @@ class Storage extends AppController{
             ]);
         }
 
-        $file_streamer = new FileStreamer();
-        $file_streamer->setDestination($dir_path);
-        $file_streamer->setFileName($type);
+        $path = FileHelper::move_input_file('file', $dir_path, '');
+//        $file_streamer = new FileStreamer();
+//        $file_streamer->setDestination($dir_path);
+//        $file_streamer->setFileName($type);
+//        $file_streamer->receive();
 
-        $file_streamer->receive();
         return $response->withJson([
             'success'   => true,
-            'message'   => 'File was saved'
+            'message'   => 'File was saved',
+            'data'      => [
+                'file_path' => $path
+            ]
         ]);
     }
 

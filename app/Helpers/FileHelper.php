@@ -8,15 +8,28 @@
 namespace App\Helpers;
 
 class FileHelper {
-    public static function move_input_file($input_name, $base_path, $name_prefix) {
+    public static function move_input_image($input_name, $base_path, $name_prefix) {
         if(array_key_exists($input_name, $_FILES))
         {
             $filename = $_FILES[$input_name]["name"];
             $extension = end(explode(".", $filename));
             $filename_image = time() . "." . $extension;
             $user_img = $base_path . "/" . $name_prefix. basename($filename_image);
-            move_uploaded_file($_FILES['user_image']['tmp_name'], $user_img);
+            move_uploaded_file($_FILES[$input_name]['tmp_name'], $user_img);
             return $user_img;
+        }
+        else{
+            return false;
+        }
+    }
+
+    public static function move_input_file($input_name, $base_path, $name_prefix) {
+        if(array_key_exists($input_name, $_FILES))
+        {
+            $filename = $_FILES[$input_name]["name"];
+            $file = $base_path . "/" . $name_prefix. basename($filename);
+            move_uploaded_file($_FILES[$input_name]['tmp_name'], $file);
+            return $file;
         }
         else{
             return false;
