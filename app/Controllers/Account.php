@@ -29,7 +29,6 @@ class Account extends AppController{
         $parsed_body = $request->getParsedBody();
         $validator = new Validator($parsed_body);
         $validator->rule('required', ['uuid', 'email']);
-        $validator->rule('email', 'email');
         $validator->rule('alphaNum', 'uuid');
 
         if($validator->validate())
