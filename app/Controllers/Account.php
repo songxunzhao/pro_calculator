@@ -53,12 +53,17 @@ class Account extends AppController{
                     'message'   => 'Successfully registered recovery email'
                 ]);
             }
-            else {
+            else if($parsed_body['email'] !== ''){
                 $user = $user_model->update($parsed_body);
                 return $response->withJson([
                     'success'   => true,
                     'data'      => $user,
                     'message'   => 'Successfully updated recovery email'
+                ]);
+            } else {
+                return $response->withJson([
+                    'success'   => true,
+                    'message'   => 'Already registered'
                 ]);
             }
         }
