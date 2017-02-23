@@ -106,7 +106,10 @@ class Storage extends AppController{
 
         $parsed_body = $request->getParsedBody();
         $uuid = $parsed_body['uuid'];
-        $type = $parsed_body['type'];
+        if(array_key_exists('type', $parsed_body))
+            $type = $parsed_body['type'];
+        else
+            $type = "";
 
         $user = $user_model->list_one_by_uuid_hash($user_model->get_uuid_hash($uuid));
         if(!$user) {
@@ -120,18 +123,22 @@ class Storage extends AppController{
         if(!file_exists($dir_path))
             mkdir($dir_path);
 
-        $file_path = $dir_path . DIRECTORY_SEPARATOR . $type;
-
         $dir_size = FileHelper::get_folder_size($dir_path);
-        if(file_exists($file_path))
-            $old_file_size = FileHelper::get_folder_size($file_path);
-        else
-            $old_file_size = 0;
+
+        $old_file_size = 0;
+        if($type != "") {
+            $file_path = $dir_path . DIRECTORY_SEPARATOR . $type;
+            if (file_exists($file_path))
+                $old_file_size = FileHelper::get_folder_size($file_path);
+        }
 
         $available_size = $config['space_limit'] - $dir_size + $old_file_size - 1;
+        $free_size = $config['space_limit'] - $dir_size;
         return $response->withJson([
             'success'   => true,
             'data'      => [
+                'used'      => $dir_size * 1024,
+                'free'      =>  $free_size * 1024,
                 'available' => $available_size * 1024
             ]
         ]);
