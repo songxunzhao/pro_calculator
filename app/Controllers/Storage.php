@@ -99,6 +99,7 @@ class Storage extends AppController{
     }
 
     public function status(Request $request, Response $response) {
+        $approved = true;
         $config = $this->ci->get('config');
         $db     = $this->ci->get('db');
 
@@ -115,6 +116,7 @@ class Storage extends AppController{
         if(!$user) {
             return $response->withJson([
                 'success'   => false,
+                'approved'  => false,
                 'message'   => 'You are not registered yet'
             ]);
         }
@@ -136,6 +138,7 @@ class Storage extends AppController{
         $free_size = $config['space_limit'] - $dir_size;
         return $response->withJson([
             'success'   => true,
+            'approved'  => $approved,
             'data'      => [
                 'used'      => $dir_size * 1024,
                 'free'      =>  $free_size * 1024,
