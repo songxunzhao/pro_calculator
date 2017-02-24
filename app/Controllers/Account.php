@@ -26,6 +26,7 @@ class Account extends AppController{
     }
 
     public function signup(Request $request, Response $response) {
+        $approved = true;
         $parsed_body = $request->getParsedBody();
         $validator = new Validator($parsed_body);
         $validator->rule('required', ['uuid']);
@@ -50,6 +51,7 @@ class Account extends AppController{
                 return $response->withJson([
                     'success'   => true,
                     'data'      => $user,
+                    'approved'  => $approved,
                     'message'   => 'Successfully registered recovery email'
                 ]);
             }
@@ -58,11 +60,13 @@ class Account extends AppController{
                 return $response->withJson([
                     'success'   => true,
                     'data'      => $user,
+                    'approved'  => $approved,
                     'message'   => 'Successfully updated recovery email'
                 ]);
             } else {
                 return $response->withJson([
                     'success'   => true,
+                    'approved'  => $approved,
                     'message'   => 'Already registered'
                 ]);
             }
