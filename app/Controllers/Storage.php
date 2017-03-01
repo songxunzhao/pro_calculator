@@ -99,7 +99,7 @@ class Storage extends AppController{
     }
 
     public function status(Request $request, Response $response) {
-        $approved = true;
+        $approved = false;
         $config = $this->ci->get('config');
         $db     = $this->ci->get('db');
 
